@@ -1,7 +1,9 @@
+using System.Collections;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float playerspeed = 10f;
+   
     void Update()
     {
 
@@ -19,10 +21,7 @@ public class PlayerController : MonoBehaviour
             position.x += 5f * Time.deltaTime; // ‰E‚ÉˆÚ“®
         }
             
-
         // V‚µ‚¢ˆÊ’u‚ğİ’è
         transform.position = position;
     }
 }
-
-
