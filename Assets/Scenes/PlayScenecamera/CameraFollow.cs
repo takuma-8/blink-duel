@@ -8,8 +8,11 @@ public class CameraFollow : MonoBehaviour
     public float distanceZ = -10f; // プレイヤーからのZ距離オフセット
 
     public GameObject speedEffect; // 速度エフェクトのプレハブ
+    public GameObject speedEffect2;
     public float speedThreshold = 15f; // エフェクトを表示する速度の閾値
-    private bool isEffectActive = false; // エフェクトが表示されているかどうか
+    public float speedThreshold2 = 50f;
+    private bool isSpeedEffectActive = false; // speedEffectが表示されているかどうか
+    private bool isSpeedEffect2Active = false; // speedEffect2が表示されているかどうか
 
     private Vector3 previousPosition; // プレイヤーの前回の位置を記録
 
@@ -20,6 +23,7 @@ public class CameraFollow : MonoBehaviour
 
         // エフェクトを一旦非表示にする
         speedEffect.SetActive(false);
+        speedEffect2.SetActive(false);
     }
 
     void LateUpdate()
@@ -32,17 +36,32 @@ public class CameraFollow : MonoBehaviour
             // プレイヤーの速度を計算 (フレーム間の移動距離/時間)
             float playerSpeed = (player.position - previousPosition).magnitude / Time.deltaTime;
 
-            // スピードが30fを超えた場合にエフェクトを有効化
-            if (playerSpeed > speedThreshold && !isEffectActive)
+            // プレイヤーの速度が speedThreshold2 を超えた場合
+            if (playerSpeed > speedThreshold2 && !isSpeedEffect2Active)
             {
-                speedEffect.SetActive(true); // エフェクトを表示
-                isEffectActive = true;
+                speedEffect2.SetActive(true); // エフェクト2を表示
+                isSpeedEffect2Active = true;
+                speedEffect.SetActive(true); // エフェクト2を表示
+                isSpeedEffectActive = true;
             }
-            // スピードが30f以下になったらエフェクトを非表示にする
-            else if (playerSpeed <= speedThreshold && isEffectActive)
+            // プレイヤーの速度が speedThreshold2 を下回った場合に speedEffect2 を非表示
+            else if (playerSpeed <= speedThreshold2 && isSpeedEffect2Active)
             {
-                speedEffect.SetActive(false); // エフェクトを非表示
-                isEffectActive = false;
+                speedEffect2.SetActive(false); // エフェクト2を非表示
+                isSpeedEffect2Active = false;
+            }
+
+            // プレイヤーの速度が speedThreshold を超えた場合 (speedEffect2 の閾値未満の場合)
+            if (playerSpeed > speedThreshold && playerSpeed <= speedThreshold2 && !isSpeedEffectActive)
+            {
+                speedEffect.SetActive(true); // エフェクト1を表示
+                isSpeedEffectActive = true;
+            }
+            // プレイヤーの速度が speedThreshold を下回った場合に speedEffect を非表示
+            else if (playerSpeed <= speedThreshold && isSpeedEffectActive)
+            {
+                speedEffect.SetActive(false); // エフェクト1を非表示
+                isSpeedEffectActive = false;
             }
 
             // 現在のプレイヤーの位置を次のフレーム用に保存
